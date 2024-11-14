@@ -1,39 +1,41 @@
 -- since this is just an example spec, don't actually load anything here and return an empty spec
 -- stylua: ignore
-if true then return {
-  {
-    "nvim-telescope/telescope.nvim",
-    keys = {
-      {
-        "<leader>ff",
-        function() require("telescope.builtin").find_files({
-          cwd = vim.uv.cwd(),
-          no_ignore=true,
-          no_ignore_parent=true,
-          hidden=true
-        }) end,
-        desc = "Find Plugin File (cwd show all)",
-      },
-      {
-        "<leader><space>",
-        function() require("telescope.builtin").find_files({
-          cwd = vim.uv.cwd(),
-          hidden=true
-        }) end,
-        desc = "Find Plugin File (cwd)",
-      },
-      {
-        "<leader>fF",
-        function() require("telescope.builtin").find_files({
-          cwd = LazyVim.root(),
-          hidden=true
-        }) end,
-        desc = "Find Plugin File (root)",
-      }
-    }
-  },
-}
+if true then return {}
 end
+-- if true then return {
+--   {
+--     "nvim-telescope/telescope.nvim",
+--     keys = {
+--       {
+--         "<leader>ff",
+--         function() require("telescope.builtin").find_files({
+--           cwd = vim.uv.cwd(),
+--           no_ignore=true,
+--           no_ignore_parent=true,
+--           hidden=true
+--         }) end,
+--         desc = "Find Plugin File (cwd show all)",
+--       },
+--       {
+--         "<leader><space>",
+--         function() require("telescope.builtin").find_files({
+--           cwd = vim.uv.cwd(),
+--           hidden=true
+--         }) end,
+--         desc = "Find Plugin File (cwd)",
+--       },
+--       {
+--         "<leader>fF",
+--         function() require("telescope.builtin").find_files({
+--           cwd = LazyVim.root(),
+--           hidden=true
+--         }) end,
+--         desc = "Find Plugin File (root)",
+--       }
+--     }
+--   },
+-- }
+-- end
 
 -- every spec file under the "plugins" directory will be loaded automatically by lazy.nvim
 --
