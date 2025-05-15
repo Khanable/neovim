@@ -1,13 +1,17 @@
 -- since this is just an example spec, don't actually load anything here and return an empty spec
 -- stylua: ignore
-return {
+return {{
   "snacks.nvim",
   opts = {
     scroll = {
       enabled = false
     }
-  }
-}
+  },
+
+  { "mason-org/mason.nvim", version = "^1.0.0" },
+  { "mason-org/mason-lspconfig.nvim", version = "^1.0.0" },
+
+}}
 -- if true then return {
 --   {
 --     "nvim-telescope/telescope.nvim",
