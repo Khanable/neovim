@@ -21,3 +21,11 @@
 -- map({ "n" }, "<leader>ps", function()
 --   print(vim.uv.cwd())
 -- end, { desc = "show cwd" })
+
+local map = LazyVim.safe_keymap_set
+map({ "n", "t" }, "<c-/>", function()
+  Snacks.terminal(nil, { cwd = LazyVim.root() })
+end, { desc = "Terminal (Root Dir)" })
+map({ "n", "t" }, "<c-_>", function()
+  Snacks.terminal(nil, { cwd = LazyVim.root() })
+end, { desc = "which_key_ignore" })
