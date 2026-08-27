@@ -40,6 +40,16 @@ local function read_lines(path)
   return lines
 end
 
+local function read_file(path)
+  local f = io.open(path, "r")
+  if not f then
+    return nil
+  end
+  local content = f:read("*a")
+  f:close()
+  return content
+end
+
 local function write_lines(path, lines)
   local f = io.open(path, "w")
   if not f then
@@ -51,6 +61,17 @@ local function write_lines(path, lines)
   end
   f:close()
   return true
+end
+
+local function lines_to_text(lines)
+  if #lines == 0 then
+    return "\n"
+  end
+  local text = table.concat(lines, "\n")
+  if lines[#lines] ~= "" then
+    text = text .. "\n"
+  end
+  return text
 end
 
 local function strip_legacy_fish_editor(lines)
@@ -87,10 +108,8 @@ local function strip_legacy_fish_editor(lines)
   return out
 end
 
-function M.merge_fish_config()
+local function merged_fish_lines()
   local path = vim.fn.expand("~/.config/fish/config.fish")
-  vim.fn.mkdir(vim.fn.fnamemodify(path, ":h"), "p")
-
   local lines = read_lines(path)
   local start_idx, end_idx
 
@@ -122,6 +141,19 @@ function M.merge_fish_config()
     table.remove(merged)
   end
 
+  return merged, path
+end
+
+function M.merge_fish_config()
+  local merged, path = merged_fish_lines()
+  local desired = lines_to_text(merged)
+  local current = read_file(path)
+
+  if current == desired then
+    return true
+  end
+
+  vim.fn.mkdir(vim.fn.fnamemodify(path, ":h"), "p")
   if not write_lines(path, merged) then
     vim.notify("nvim-editor: cannot write " .. path, vim.log.levels.ERROR)
     return false
@@ -144,16 +176,25 @@ function M.install_script()
   local content = in_f:read("*a")
   in_f:close()
 
-  local out_f = io.open(dst_path, "w")
-  if not out_f then
-    vim.notify("nvim-editor: cannot write " .. dst_path, vim.log.levels.ERROR)
-    return false
+  local current = read_file(dst_path)
+  if current ~= content then
+    local out_f = io.open(dst_path, "w")
+    if not out_f then
+      vim.notify("nvim-editor: cannot write " .. dst_path, vim.log.levels.ERROR)
+      return false
+    end
+    out_f:write(content)
+    out_f:close()
   end
-  out_f:write(content)
-  out_f:close()
 
   vim.fn.system({ "chmod", "+x", dst_path })
   return true
+end
+
+function M.install()
+  local ok_script = M.install_script()
+  local ok_fish = M.merge_fish_config()
+  return ok_script and ok_fish
 end
 
 local function focus_terminal_insert()
@@ -171,19 +212,15 @@ end
 
 function M.setup(opts)
   opts = vim.tbl_extend("force", {
-    install_script = true,
-    merge_fish = true,
     set_editor = true,
     save_close_keymap = true,
   }, opts or {})
 
-  if opts.install_script and not M.install_script() then
-    return
-  end
-
-  if opts.merge_fish and not M.merge_fish_config() then
-    return
-  end
+  vim.api.nvim_create_user_command("NvimEditorInstall", function()
+    if M.install() then
+      vim.notify("nvim-editor: install complete", vim.log.levels.INFO)
+    end
+  end, { desc = "Install nvim-editor bin script and fish config" })
 
   if opts.set_editor then
     vim.env.EDITOR = SCRIPT
