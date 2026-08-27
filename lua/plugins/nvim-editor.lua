@@ -1,12 +1,11 @@
 return {
-  name = "nvim-editor",
-  dir = vim.fn.stdpath("config") .. "/lua/plugins/nvim-editor",
+  dir = vim.fn.stdpath("config") .. "/lua/nvim-editor",
   lazy = false,
   priority = 10000,
-  build = function()
+  build = function(_plugin)
     require("nvim-editor").install()
   end,
-  config = function()
+  config = function(_plugin)
     require("nvim-editor").setup()
   end,
 }
