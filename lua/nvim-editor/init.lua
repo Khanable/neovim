@@ -216,12 +216,6 @@ function M.setup(opts)
     save_close_keymap = true,
   }, opts or {})
 
-  vim.api.nvim_create_user_command("NvimEditorInstall", function()
-    if M.install() then
-      vim.notify("nvim-editor: install complete", vim.log.levels.INFO)
-    end
-  end, { desc = "Install nvim-editor bin script and fish config" })
-
   if opts.set_editor then
     vim.env.EDITOR = SCRIPT
     vim.env.VISUAL = SCRIPT
