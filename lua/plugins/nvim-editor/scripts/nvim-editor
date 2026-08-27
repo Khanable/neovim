@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# EDITOR wrapper for tools that exec $EDITOR directly (Cursor Ctrl+G, git, etc.).
+# Requires: neovim-remote (nvr) — uv tool install neovim-remote
+# When inside a Neovim :terminal, open in the parent instance and wait for the buffer to close.
+
+if [[ -n "${NVIM:-}" ]]; then
+  exec nvr --servername "$NVIM" --remote-wait-silent "$@"
+fi
+
+exec nvim "$@"
