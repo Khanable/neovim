@@ -225,7 +225,11 @@ function M.setup(opts)
     local map = LazyVim.safe_keymap_set
     map("n", "<leader>bs", function()
       vim.cmd.write()
-      Snacks.bufdelete()
+      if #vim.api.nvim_tabpage_list_wins(0) > 1 then
+        vim.cmd.close()
+      else
+        Snacks.bufdelete()
+      end
       focus_terminal_insert()
     end, { desc = "Save and Close Buffer" })
   end

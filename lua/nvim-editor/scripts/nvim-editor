@@ -4,7 +4,7 @@
 # When inside a Neovim :terminal, open in the parent instance and wait for the buffer to close.
 
 if [[ -n "${NVIM:-}" ]]; then
-  exec nvr --servername "$NVIM" --remote-wait-silent "$@"
+  exec nvr --servername "$NVIM" -cc vsplit -c "setlocal bufhidden=wipe" --remote-wait-silent "$@"
 fi
 
 exec nvim "$@"
